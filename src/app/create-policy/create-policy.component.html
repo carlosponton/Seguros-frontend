@@ -1,0 +1,57 @@
+<form [formGroup]="contactForm" (ngSubmit)="onSubmit()" novalidate>
+    <div class="form-group">
+      <label for="name">Name:</label>
+      <input formControlName="name" [ngClass]="{'is-invalid':policyValid.name}" class="form-control" id="name">
+      <div class="valid-feedback" [ngClass]="{'is-invalid':policyValid.description}">
+          Looks good!
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="description">Descripción:</label>
+      <input formControlName="description" [ngClass]="{'is-invalid':policyValid.description}" class="form-control" id="description">
+    </div>
+    <div class="form-group">
+      <label for="exampleInputEmail1">Fecha</label>
+      <div class="input-group">
+        <input class="form-control" [ngClass]="{'is-invalid':policyValid.date}" placeholder="yyyy-mm-dd"
+                name="dp" formControlName="date" ngbDatepicker (click)="d.toggle()" #d="ngbDatepicker">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="periodo">Periodo:</label>
+      <input formControlName="period" [ngClass]="{'is-invalid':policyValid.period}" class="form-control">
+    </div>
+    <div class="form-group">
+      <label for="price">Precio:</label>
+      <input formControlName="price" [ngClass]="{'is-invalid':policyValid.price}" class="form-control">
+    </div>
+    <div class="form-group">
+      <label for="danger">Danger:</label>
+      <select formControlName="danger" [ngClass]="{'is-invalid':policyValid.danger}" class="form-control">
+        <option [value]="0">Bajo</option>
+        <option [value]="1">Medio</option>
+        <option [value]="2">Medio-Alto</option>
+        <option [value]="3">Alto</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="typeId">Tipo:</label>
+      <select formControlName="typeId" [ngClass]="{'is-invalid':policyValid.typeId}" class="form-control">
+        <option *ngFor="let type of types" [value]="type.id">{{type.value}}</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="clienIdt">Cliente:</label>
+      <select formControlName="clientId" [ngClass]="{'is-invalid':policyValid.clientId}" class="form-control">
+        <option *ngFor="let client of clients" [value]="client.id">{{client.name}} {{client.lastName}}</option>
+      </select>
+    </div>
+    <div class="form-group row">
+      <div>
+        <ngb-alert *ngIf="alertMessage" [type]="typeAlert" (close)="alertMessage = null">{{ alertMessage }}</ngb-alert>
+      </div>
+      <div class="col-sm-10 col-md-3">
+        <button type="submit" class="btn btn-primary">Save</button>
+      </div>
+    </div>
+</form>

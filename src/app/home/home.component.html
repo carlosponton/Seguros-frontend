@@ -1,0 +1,13 @@
+<div class="row">
+  <div class="col-md-4" *ngFor="let policy of policies">
+    <h2>
+      {{policy.name}}
+    </h2>
+    <p>
+      {{policy.description}}
+    </p>
+    <p>
+      <a class="btn" routerLink="/policy/{{policy.id}}">View details »</a>
+    </p>
+  </div>
+</div>
