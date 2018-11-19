@@ -18,12 +18,22 @@ export class RestService {
   }
 
   getPolicy(policy: string): Observable<any> {
-    return this.http.get(this.endpoint + 'policies' + policy).pipe(
+    return this.http.get(this.endpoint + 'policies/' + policy).pipe(
       map(this.extractData));
   }
 
   postPolicy(policy: Policies): Observable<any> {
     return this.http.post(this.endpoint + 'policies', policy).pipe(
+      map(this.extractData));
+  }
+
+  putPolicy(policy: Policies): Observable<any> {
+    return this.http.put(this.endpoint + 'policies/' + policy.id, policy).pipe(
+      map(this.extractData));
+  }
+
+  deletePolicy(policy: number): Observable<any> {
+    return this.http.delete(this.endpoint + 'policies/' + policy).pipe(
       map(this.extractData));
   }
 

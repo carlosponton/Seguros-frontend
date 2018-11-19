@@ -21,11 +21,12 @@ export class CreatePolicyComponent implements OnInit {
   alertMessage: string;
   typeAlert = "error";
   
-  private contactForm: FormGroup;
+  private policyForm: FormGroup;
   private clients: Clients;
   private types: Types;
   private policy: Policies;
   private id: number;
+  private date: Date;
   private policyValid = {
     clientId: false,
     danger: false,
@@ -42,7 +43,7 @@ export class CreatePolicyComponent implements OnInit {
   ) {  }
 
   ngOnInit() {
-    this.contactForm = this.createFormGroup();
+    this.policyForm = this.createFormGroup();
     this.rest.getClients().subscribe( (clients: Clients) => {
       this.clients = clients;
     });
@@ -55,7 +56,22 @@ export class CreatePolicyComponent implements OnInit {
     this.route.params.subscribe((params)=>{
       this.id = params.id;
       this.rest.getPolicy(params.id).subscribe((policy: Policies) => {
-        this.policy = policy;
+        this.policy = JSON.parse(JSON.stringify(policy));
+        let value = {
+          name: policy.name,
+          clientId: policy.clientId,
+          danger: policy.danger,
+          description: policy.description,
+          period: policy.period,
+          price: policy.price,
+          typeId: policy.typeId,
+          date: {
+            year: new Date(policy.date).getFullYear(),
+            month: new Date(policy.date).getMonth(),
+            day: new Date(policy.date).getDay() 
+          }
+        }
+        this.policyForm.setValue(value);
       })
     })
   }
@@ -74,27 +90,52 @@ export class CreatePolicyComponent implements OnInit {
   }
 
   onSubmit() {
-    if(this.contactForm.valid){
-      this.validForm(this.contactForm);
-      this.policy = JSON.parse(JSON.stringify(this.contactForm.value));
-      this.policy.date = new Date(this.contactForm.value.date.year, this.contactForm.value.date.month, this.contactForm.value.date.day).toJSON();
-      this.rest.postPolicy(this.policy).subscribe(v => {
-        if(v){
-          this.typeAlert = "success";
-          this.changeAlertMessage('Sus datos se guardaron con éxito.');
-          this.contactForm.reset();
-        }else{
-          this.typeAlert = "danger";
-          this.changeAlertMessage('Ocurrió un error al intentar enviar sus datos. Vuelva a intentarlo.');
-        }
-      },
-      error => {
+    if(this.policyForm.valid){
+      this.validForm(this.policyForm);
+      this.policy = JSON.parse(JSON.stringify(this.policyForm.value));
+      this.policy.date = new Date(this.policyForm.value.date.year, this.policyForm.value.date.month, this.policyForm.value.date.day).toJSON();
+      if(this.id){
+        this.put(this.policy);
+      }else{
+        this.post(this.policy);        
+      }
+    }else{
+      this.validForm(this.policyForm);
+    }
+  }
+
+  private post(policy){
+    this.rest.postPolicy(policy).subscribe(v => {
+      if(v){
+        this.typeAlert = "success";
+        this.changeAlertMessage('Sus datos se guardaron con éxito.');
+        this.policyForm.reset();
+      }else{
         this.typeAlert = "danger";
         this.changeAlertMessage('Ocurrió un error al intentar enviar sus datos. Vuelva a intentarlo.');
-      });
-    }else{
-      this.validForm(this.contactForm);
-    }
+      }
+    },
+    error => {
+      this.typeAlert = "danger";
+      this.changeAlertMessage('Ocurrió un error al intentar enviar sus datos. Vuelva a intentarlo.');
+    });
+  }
+
+  private put(policy){
+    policy.id = this.id;
+    this.rest.putPolicy(policy).subscribe(v => {
+      if(v){
+        this.typeAlert = "success";
+        this.changeAlertMessage('Sus datos se guardaron con éxito.');
+      }else{
+        this.typeAlert = "danger";
+        this.changeAlertMessage('Ocurrió un error al intentar enviar sus datos. Vuelva a intentarlo.');
+      }
+    },
+    error => {
+      this.typeAlert = "danger";
+      this.changeAlertMessage('Ocurrió un error al intentar enviar sus datos. Vuelva a intentarlo.');
+    });
   }
 
   changeAlertMessage(message: string) {
@@ -109,6 +150,12 @@ export class CreatePolicyComponent implements OnInit {
       debounceTime(5000)
     ).subscribe(() => this.alertMessage = null);
   }
+
+  delete(){
+    this.rest.deletePolicy(this.id).subscribe(v=>{
+      
+    })
+  }  
 
   validForm(form: FormGroup){
     if(!form.get('name').valid){

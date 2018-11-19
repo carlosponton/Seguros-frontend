@@ -5,7 +5,7 @@ export interface Policies {
     id: String,
     clientId: Number,
     danger: Number,
-    date: String,
+    date: any,
     description: String,
     name: String,
     period: Number,

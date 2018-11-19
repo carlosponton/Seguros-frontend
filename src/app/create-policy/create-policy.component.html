@@ -1,4 +1,4 @@
-<form [formGroup]="contactForm" (ngSubmit)="onSubmit()" novalidate>
+<form [formGroup]="policyForm" (ngSubmit)="onSubmit()" novalidate>
     <div class="form-group">
       <label for="name">Name:</label>
       <input formControlName="name" [ngClass]="{'is-invalid':policyValid.name}" class="form-control" id="name">
@@ -52,6 +52,7 @@
       </div>
       <div class="col-sm-10 col-md-3">
         <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-danger" (click)="delete()" *ngIf="id">Delete</button>
       </div>
     </div>
 </form>
