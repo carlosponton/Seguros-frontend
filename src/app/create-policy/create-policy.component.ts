@@ -6,7 +6,7 @@ import { Types } from '../models/types.model';
 import { Policies } from '../models/policies.model';
 import { Subject } from 'rxjs';
 import {debounceTime} from 'rxjs/operators';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-create-policy',
@@ -39,7 +39,8 @@ export class CreatePolicyComponent implements OnInit {
   }
   constructor(
     private rest: RestService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {  }
 
   ngOnInit() {
@@ -153,7 +154,7 @@ export class CreatePolicyComponent implements OnInit {
 
   delete(){
     this.rest.deletePolicy(this.id).subscribe(v=>{
-      
+      this.router.navigate(['']);
     })
   }  
 
